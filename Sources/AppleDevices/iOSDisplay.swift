@@ -8,7 +8,7 @@
 import Foundation
 import CoreGraphics
 
-public struct iOSDisplay: Equatable {
+public struct iOSDisplay: Hashable, CustomStringConvertible {
 	public let id: ID
 	public let size: CGSize
 	public let zoomedSize: CGSize?
@@ -18,10 +18,40 @@ public struct iOSDisplay: Equatable {
 	public let cornerRadius: Double
 
 	public var devices: [iPhone] {
-		return iPhone.ID.allCases.compactMap { deviceID in
-			let device = iPhone.withID(deviceID)
+		iPhone.ID.allCases.compactMap { deviceID in
+			let device = iPhone(id: deviceID)
 			return device.display.id == id ? device : nil
 		}
+	}
+
+	public var description: String {
+		let zoomedSizeString = if let zoomedSize {
+			"\(Int(zoomedSize.width)) × \(Int(zoomedSize.height))"
+		} else {
+			"-"
+		}
+
+		return """
+		ID                   : \(id)
+		Size                 : \(Int(size.width)) × \(Int(size.height)) @\(scale.rawValue)
+		Zoomed Size          : \(zoomedSizeString)
+		Screen Resolution    : \(Int(screenResolution.width)) × \(Int(screenResolution.height))
+		Rendering Resolution : \(Int(renderingResolution.width)) × \(Int(renderingResolution.height))
+		Corner Radius        : \(cornerRadius)
+		"""
+	}
+
+	public var path: CGPath {
+		let path = CGMutablePath()
+
+		let rect = CGRect(origin: .zero, size: size)
+		if cornerRadius > 0 {
+			path.addRoundedRect(in: rect, cornerWidth: cornerRadius, cornerHeight: cornerRadius)
+		} else {
+			path.addRect(rect)
+		}
+
+		return path.copy()!
 	}
 
 	public init(
@@ -44,7 +74,7 @@ public struct iOSDisplay: Equatable {
 }
 
 extension iOSDisplay {
-	public struct Scale: Equatable, RawRepresentable {
+	public struct Scale: Hashable, RawRepresentable {
 		public let rawValue: String
 
 		public static var x1: Scale {
@@ -66,7 +96,7 @@ extension iOSDisplay {
 }
 
 extension iOSDisplay {
-	public enum ID: Equatable, CaseIterable {
+	public enum ID: Hashable, CaseIterable {
 		case iPhone
 		case iPhone4
 		case iPhone5
@@ -85,8 +115,8 @@ extension iOSDisplay {
 		case iPhoneAir
 	}
 
-	public static func withID(_ id: ID) -> iOSDisplay {
-		return switch id {
+	public init(id: ID) {
+		self = switch id {
 		case .iPhone:
 			iOSDisplay(
 				id: id,

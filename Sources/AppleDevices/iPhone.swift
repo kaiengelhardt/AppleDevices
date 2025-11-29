@@ -23,12 +23,30 @@ public struct iPhone: Equatable {
 		self.releaseIOSVersion = releaseIOSVersion
 		self.lastIOSVersion = lastIOSVersion
 	}
+
+	public func supports(_ deploymentTarget: iOSDeploymentTarget) -> Bool {
+		switch lastIOSVersion {
+		case .latest:
+			true
+		case .version(let osVersion):
+			deploymentTarget.version <= osVersion
+		}
+	}
+
+	public static func phonesSupporting(_ deploymentTarget: iOSDeploymentTarget) -> [iPhone] {
+		iPhone.ID.allCases.map { deviceID in
+			iPhone(id: deviceID)
+		}
+		.filter {
+			$0.supports(deploymentTarget)
+		}
+	}
 }
 
 extension iPhone {
 	public enum LastIOSVersion: Equatable, ExpressibleByStringLiteral, CustomStringConvertible {
 		case latest
-		case version(String)
+		case version(OSVersion)
 
 		public var description: String {
 			return switch self {
@@ -40,7 +58,7 @@ extension iPhone {
 		}
 
 		public init(stringLiteral value: StringLiteralType) {
-			self = .version(value)
+			self = .version(OSVersion(stringLiteral: value))
 		}
 	}
 }
@@ -100,13 +118,13 @@ extension iPhone {
 		case iPhone17ProMax
 	}
 
-	public static func withID(_ id: ID) -> iPhone {
-		return switch id {
+	public init(id: ID) {
+		self = switch id {
 		case .iPhone:
 			iPhone(
 				id: id,
 				name: "iPhone",
-				display: .withID(.iPhone),
+				display: iOSDisplay(id: .iPhone),
 				releaseIOSVersion: "1.0.0",
 				lastIOSVersion: "3.1.3",
 			)
@@ -114,7 +132,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 3G",
-				display: .withID(.iPhone),
+				display: iOSDisplay(id: .iPhone),
 				releaseIOSVersion: "2.0.0",
 				lastIOSVersion: "4.2.1",
 			)
@@ -122,7 +140,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 3GS",
-				display: .withID(.iPhone),
+				display: iOSDisplay(id: .iPhone),
 				releaseIOSVersion: "3.0.0",
 				lastIOSVersion: "6.1.6",
 			)
@@ -130,7 +148,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 4",
-				display: .withID(.iPhone4),
+				display: iOSDisplay(id: .iPhone4),
 				releaseIOSVersion: "4.0.0",
 				lastIOSVersion: "7.1.2",
 			)
@@ -138,7 +156,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 4s",
-				display: .withID(.iPhone4),
+				display: iOSDisplay(id: .iPhone4),
 				releaseIOSVersion: "5.0.0",
 				lastIOSVersion: "9.3.6",
 			)
@@ -146,7 +164,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 5",
-				display: .withID(.iPhone5),
+				display: iOSDisplay(id: .iPhone5),
 				releaseIOSVersion: "6.0.0",
 				lastIOSVersion: "10.3.4",
 			)
@@ -154,7 +172,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 5c",
-				display: .withID(.iPhone5),
+				display: iOSDisplay(id: .iPhone5),
 				releaseIOSVersion: "7.0.0",
 				lastIOSVersion: "10.3.3",
 			)
@@ -162,7 +180,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 5s",
-				display: .withID(.iPhone5),
+				display: iOSDisplay(id: .iPhone5),
 				releaseIOSVersion: "7.0.0",
 				lastIOSVersion: "12.5.7",
 			)
@@ -170,7 +188,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 6",
-				display: .withID(.iPhone6),
+				display: iOSDisplay(id: .iPhone6),
 				releaseIOSVersion: "8.0.0",
 				lastIOSVersion: "12.5.7",
 			)
@@ -178,7 +196,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 6 Plus",
-				display: .withID(.iPhone6Plus),
+				display: iOSDisplay(id: .iPhone6Plus),
 				releaseIOSVersion: "8.0.0",
 				lastIOSVersion: "12.5.7",
 			)
@@ -186,7 +204,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 6s",
-				display: .withID(.iPhone6),
+				display: iOSDisplay(id: .iPhone6),
 				releaseIOSVersion: "9.0.0",
 				lastIOSVersion: "15.8.5",
 			)
@@ -194,7 +212,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 6s Plus",
-				display: .withID(.iPhone6Plus),
+				display: iOSDisplay(id: .iPhone6Plus),
 				releaseIOSVersion: "9.0.0",
 				lastIOSVersion: "15.8.5",
 			)
@@ -202,7 +220,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone SE (1st generation)",
-				display: .withID(.iPhone5),
+				display: iOSDisplay(id: .iPhone5),
 				releaseIOSVersion: "9.3.0",
 				lastIOSVersion: "15.8.5",
 			)
@@ -210,7 +228,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 7",
-				display: .withID(.iPhone6),
+				display: iOSDisplay(id: .iPhone6),
 				releaseIOSVersion: "10.0.1",
 				lastIOSVersion: "15.8.5",
 			)
@@ -218,7 +236,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 7 Plus",
-				display: .withID(.iPhone6Plus),
+				display: iOSDisplay(id: .iPhone6Plus),
 				releaseIOSVersion: "10.0.1",
 				lastIOSVersion: "15.8.5",
 			)
@@ -226,7 +244,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 8",
-				display: .withID(.iPhone6),
+				display: iOSDisplay(id: .iPhone6),
 				releaseIOSVersion: "11.0.0",
 				lastIOSVersion: "16.7.12",
 			)
@@ -234,7 +252,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 8 Plus",
-				display: .withID(.iPhone6Plus),
+				display: iOSDisplay(id: .iPhone6Plus),
 				releaseIOSVersion: "11.0.0",
 				lastIOSVersion: "16.7.12",
 			)
@@ -242,7 +260,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone X",
-				display: .withID(.iPhoneX),
+				display: iOSDisplay(id: .iPhoneX),
 				releaseIOSVersion: "11.0.1",
 				lastIOSVersion: "16.7.12",
 			)
@@ -250,7 +268,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone XR",
-				display: .withID(.iPhoneXR),
+				display: iOSDisplay(id: .iPhoneXR),
 				releaseIOSVersion: "12.0.0",
 				lastIOSVersion: "18.7.1",
 			)
@@ -258,7 +276,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone XS",
-				display: .withID(.iPhoneX),
+				display: iOSDisplay(id: .iPhoneX),
 				releaseIOSVersion: "12.0.0",
 				lastIOSVersion: "18.7.1",
 			)
@@ -266,7 +284,7 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone XS Max",
-				display: .withID(.iPhoneXSMax),
+				display: iOSDisplay(id: .iPhoneXSMax),
 				releaseIOSVersion: "12.0.0",
 				lastIOSVersion: "18.7.1",
 			)
@@ -274,210 +292,210 @@ extension iPhone {
 			iPhone(
 				id: id,
 				name: "iPhone 11",
-				display: .withID(.iPhoneXR),
+				display: iOSDisplay(id: .iPhoneXR),
 				releaseIOSVersion: "13.0.0",
 			)
 		case .iPhone11Pro:
 			iPhone(
 				id: id,
 				name: "iPhone 11 Pro",
-				display: .withID(.iPhoneX),
+				display: iOSDisplay(id: .iPhoneX),
 				releaseIOSVersion: "13.0.0",
 			)
 		case .iPhone11ProMax:
 			iPhone(
 				id: id,
 				name: "iPhone 11 Pro Max",
-				display: .withID(.iPhoneXSMax),
+				display: iOSDisplay(id: .iPhoneXSMax),
 				releaseIOSVersion: "13.0.0",
 			)
 		case .iPhoneSEGen2:
 			iPhone(
 				id: id,
 				name: "iPhone SE (2nd generation)",
-				display: .withID(.iPhone6),
+				display: iOSDisplay(id: .iPhone6),
 				releaseIOSVersion: "13.4.0",
 			)
 		case .iPhone12Mini:
 			iPhone(
 				id: id,
 				name: "iPhone 12 mini",
-				display: .withID(.iPhone12Mini),
+				display: iOSDisplay(id: .iPhone12Mini),
 				releaseIOSVersion: "14.2.0",
 			)
 		case .iPhone12:
 			iPhone(
 				id: id,
 				name: "iPhone 12",
-				display: .withID(.iPhone12),
+				display: iOSDisplay(id: .iPhone12),
 				releaseIOSVersion: "14.1.0",
 			)
 		case .iPhone12Pro:
 			iPhone(
 				id: id,
 				name: "iPhone 12 Pro",
-				display: .withID(.iPhone12),
+				display: iOSDisplay(id: .iPhone12),
 				releaseIOSVersion: "14.1.0",
 			)
 		case .iPhone12ProMax:
 			iPhone(
 				id: id,
 				name: "iPhone 12 Pro Max",
-				display: .withID(.iPhone12ProMax),
+				display: iOSDisplay(id: .iPhone12ProMax),
 				releaseIOSVersion: "14.2.0",
 			)
 		case .iPhone13Mini:
 			iPhone(
 				id: id,
 				name: "iPhone 13 Mini",
-				display: .withID(.iPhone12Mini),
+				display: iOSDisplay(id: .iPhone12Mini),
 				releaseIOSVersion: "14.2.0",
 			)
 		case .iPhone13:
 			iPhone(
 				id: id,
 				name: "iPhone 13",
-				display: .withID(.iPhone12),
+				display: iOSDisplay(id: .iPhone12),
 				releaseIOSVersion: "15.0.0",
 			)
 		case .iPhone13Pro:
 			iPhone(
 				id: id,
 				name: "iPhone 13 Pro",
-				display: .withID(.iPhone12),
+				display: iOSDisplay(id: .iPhone12),
 				releaseIOSVersion: "15.0.0",
 			)
 		case .iPhone13ProMax:
 			iPhone(
 				id: id,
 				name: "iPhone 13 Pro Max",
-				display: .withID(.iPhone12ProMax),
+				display: iOSDisplay(id: .iPhone12ProMax),
 				releaseIOSVersion: "15.0.0",
 			)
 		case .iPhoneSEGen3:
 			iPhone(
 				id: id,
 				name: "iPhone SE (3rd generation)",
-				display: .withID(.iPhone6),
+				display: iOSDisplay(id: .iPhone6),
 				releaseIOSVersion: "15.4.0",
 			)
 		case .iPhone14:
 			iPhone(
 				id: id,
 				name: "iPhone 14",
-				display: .withID(.iPhone12),
+				display: iOSDisplay(id: .iPhone12),
 				releaseIOSVersion: "16.0.0",
 			)
 		case .iPhone14Plus:
 			iPhone(
 				id: id,
 				name: "iPhone 14 Plus",
-				display: .withID(.iPhone12ProMax),
+				display: iOSDisplay(id: .iPhone12ProMax),
 				releaseIOSVersion: "16.0.0",
 			)
 		case .iPhone14Pro:
 			iPhone(
 				id: id,
 				name: "iPhone 14 Pro",
-				display: .withID(.iPhone14Pro),
+				display: iOSDisplay(id: .iPhone14Pro),
 				releaseIOSVersion: "16.0.0",
 			)
 		case .iPhone14ProMax:
 			iPhone(
 				id: id,
 				name: "iPhone 14 Pro Max",
-				display: .withID(.iPhone14ProMax),
+				display: iOSDisplay(id: .iPhone14ProMax),
 				releaseIOSVersion: "16.0.0",
 			)
 		case .iPhone15:
 			iPhone(
 				id: id,
 				name: "iPhone 15",
-				display: .withID(.iPhone14Pro),
+				display: iOSDisplay(id: .iPhone14Pro),
 				releaseIOSVersion: "17.0.0",
 			)
 		case .iPhone15Plus:
 			iPhone(
 				id: id,
 				name: "iPhone 15 Plus",
-				display: .withID(.iPhone14ProMax),
+				display: iOSDisplay(id: .iPhone14ProMax),
 				releaseIOSVersion: "17.0.0",
 			)
 		case .iPhone15Pro:
 			iPhone(
 				id: id,
 				name: "iPhone 15 Pro",
-				display: .withID(.iPhone14Pro),
+				display: iOSDisplay(id: .iPhone14Pro),
 				releaseIOSVersion: "17.0.0",
 			)
 		case .iPhone15ProMax:
 			iPhone(
 				id: id,
 				name: "iPhone 15 Pro Max",
-				display: .withID(.iPhone14ProMax),
+				display: iOSDisplay(id: .iPhone14ProMax),
 				releaseIOSVersion: "17.0.0",
 			)
 		case .iPhone16:
 			iPhone(
 				id: id,
 				name: "iPhone 16",
-				display: .withID(.iPhone14Pro),
+				display: iOSDisplay(id: .iPhone14Pro),
 				releaseIOSVersion: "18.0.0",
 			)
 		case .iPhone16Plus:
 			iPhone(
 				id: id,
 				name: "iPhone 16 Plus",
-				display: .withID(.iPhone14ProMax),
+				display: iOSDisplay(id: .iPhone14ProMax),
 				releaseIOSVersion: "18.0.0",
 			)
 		case .iPhone16Pro:
 			iPhone(
 				id: id,
 				name: "iPhone 16 Pro",
-				display: .withID(.iPhone14Pro),
+				display: iOSDisplay(id: .iPhone16Pro),
 				releaseIOSVersion: "18.0.0",
 			)
 		case .iPhone16ProMax:
 			iPhone(
 				id: id,
 				name: "iPhone 16 Pro Max",
-				display: .withID(.iPhone14ProMax),
+				display: iOSDisplay(id: .iPhone16ProMax),
 				releaseIOSVersion: "18.0.0",
 			)
 		case .iPhone16e:
 			iPhone(
 				id: id,
 				name: "iPhone 16e",
-				display: .withID(.iPhone12),
+				display: iOSDisplay(id: .iPhone12),
 				releaseIOSVersion: "18.3.0",
 			)
 		case .iPhone17:
 			iPhone(
 				id: id,
 				name: "iPhone 17",
-				display: .withID(.iPhone16Pro),
+				display: iOSDisplay(id: .iPhone16Pro),
 				releaseIOSVersion: "26.0.0",
 			)
 		case .iPhoneAir:
 			iPhone(
 				id: id,
 				name: "iPhone Air",
-				display: .withID(.iPhoneAir),
+				display: iOSDisplay(id: .iPhoneAir),
 				releaseIOSVersion: "26.0.0",
 			)
 		case .iPhone17Pro:
 			iPhone(
 				id: id,
 				name: "iPhone 17 Pro",
-				display: .withID(.iPhone16Pro),
+				display: iOSDisplay(id: .iPhone16Pro),
 				releaseIOSVersion: "26.0.0",
 			)
 		case .iPhone17ProMax:
 			iPhone(
 				id: id,
 				name: "iPhone 17 Pro Max",
-				display: .withID(.iPhone16ProMax),
+				display: iOSDisplay(id: .iPhone16ProMax),
 				releaseIOSVersion: "26.0.0",
 			)
 		}

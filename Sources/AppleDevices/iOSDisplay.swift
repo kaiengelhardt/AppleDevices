@@ -9,13 +9,34 @@ import Foundation
 import CoreGraphics
 
 public struct iOSDisplay: Hashable, CustomStringConvertible {
+	/// Display identifier
 	public let id: ID
+
+	/// Size in points
 	public let size: CGSize
+
+	/// Zoomed size in points
 	public let zoomedSize: CGSize?
+
+	/// Scale factor
 	public let scale: Scale
+
+	/// Scale factor accounting for deviations between physical and rendering resolution
+	public var realScale: Double {
+		physicalResolution.width / size.width
+	}
+
+	/// Physical resolution in pixels
 	public let physicalResolution: CGSize
+
+	/// Rendering resolution in pixels
 	public let renderingResolution: CGSize
+
+	/// Corner radius in points
 	public let cornerRadius: Double
+
+	/// Diagnoal size in inches
+	public let diagonalSize: Double
 
 	public var devices: [iPhone] {
 		iPhone.ID.allCases.compactMap { deviceID in
@@ -31,14 +52,30 @@ public struct iOSDisplay: Hashable, CustomStringConvertible {
 			"-"
 		}
 
-		return """
+		var baseDescription =
+		"""
 		ID                   : \(id)
 		Size                 : \(Int(size.width)) × \(Int(size.height)) @\(scale.rawValue)
 		Zoomed Size          : \(zoomedSizeString)
 		Physical Resolution  : \(Int(physicalResolution.width)) × \(Int(physicalResolution.height))
-		Rendering Resolution : \(Int(renderingResolution.width)) × \(Int(renderingResolution.height))
-		Corner Radius        : \(cornerRadius)
 		"""
+
+		let renderingResolutionDescription =
+		"""
+		Rendering Resolution : \(Int(renderingResolution.width)) × \(Int(renderingResolution.height))"
+		"""
+
+		if physicalResolution != renderingResolution {
+			baseDescription += renderingResolutionDescription
+		}
+
+		baseDescription +=
+		"""
+		Corner Radius        : \(cornerRadius)
+		Diagonal Size        : \(diagonalSize)\"
+		"""
+
+		return baseDescription
 	}
 
 	public var path: CGPath {
@@ -61,7 +98,8 @@ public struct iOSDisplay: Hashable, CustomStringConvertible {
 		scale: Scale,
 		physicalResolution: CGSize,
 		renderingResolution: CGSize? = nil,
-		cornerRadius: Double = 0
+		cornerRadius: Double = 0,
+		diagonalSize: Double
 	) {
 		self.id = id
 		self.size = size
@@ -70,6 +108,7 @@ public struct iOSDisplay: Hashable, CustomStringConvertible {
 		self.physicalResolution = physicalResolution
 		self.renderingResolution = renderingResolution ?? physicalResolution
 		self.cornerRadius = cornerRadius
+		self.diagonalSize = diagonalSize
 	}
 }
 
@@ -123,7 +162,7 @@ extension iOSDisplay {
 				size: CGSize(width: 320, height: 480),
 				scale: .x1,
 				physicalResolution: CGSize(width: 320, height: 480),
-				renderingResolution: CGSize(width: 320, height: 480),
+				diagonalSize: 3.5,
 			)
 		case .iPhone4:
 			iOSDisplay(
@@ -131,6 +170,7 @@ extension iOSDisplay {
 				size: CGSize(width: 320, height: 480),
 				scale: .x2,
 				physicalResolution: CGSize(width: 640, height: 960),
+				diagonalSize: 3.5,
 			)
 		case .iPhone5:
 			iOSDisplay(
@@ -138,6 +178,7 @@ extension iOSDisplay {
 				size: CGSize(width: 320, height: 568),
 				scale: .x2,
 				physicalResolution: CGSize(width: 640, height: 1136),
+				diagonalSize: 4.0,
 			)
 		case .iPhone6:
 			iOSDisplay(
@@ -146,6 +187,7 @@ extension iOSDisplay {
 				zoomedSize: CGSize(width: 320, height: 568),
 				scale: .x2,
 				physicalResolution: CGSize(width: 750, height: 1334),
+				diagonalSize: 4.7,
 			)
 		case .iPhone6Plus:
 			iOSDisplay(
@@ -153,8 +195,9 @@ extension iOSDisplay {
 				size: CGSize(width: 414, height: 736),
 				zoomedSize: CGSize(width: 375, height: 667),
 				scale: .x3,
-				physicalResolution: CGSize(width: 1242, height: 2208),
-				renderingResolution: CGSize(width: 1080, height: 1920),
+				physicalResolution: CGSize(width: 1080, height: 1920),
+				renderingResolution: CGSize(width: 1242, height: 2208),
+				diagonalSize: 5.5,
 			)
 		case .iPhoneX:
 			iOSDisplay(
@@ -164,6 +207,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1125, height: 2436),
 				cornerRadius: 39,
+				diagonalSize: 5.8,
 			)
 		case .iPhoneXR:
 			iOSDisplay(
@@ -173,6 +217,7 @@ extension iOSDisplay {
 				scale: .x2,
 				physicalResolution: CGSize(width: 828, height: 1792),
 				cornerRadius: 41.5,
+				diagonalSize: 6.1,
 			)
 		case .iPhoneXSMax:
 			iOSDisplay(
@@ -182,6 +227,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1242, height: 2688),
 				cornerRadius: 39,
+				diagonalSize: 6.5,
 			)
 		case .iPhone12Mini:
 			iOSDisplay(
@@ -190,8 +236,9 @@ extension iOSDisplay {
 				zoomedSize: CGSize(width: 320, height: 693),
 				scale: .x3,
 				physicalResolution: CGSize(width: 1080, height: 2340),
-				renderingResolution: CGSize(width: 1125, height: 2436), // ????
+				renderingResolution: CGSize(width: 1125, height: 2436),
 				cornerRadius: 44,
+				diagonalSize: 5.4,
 			)
 		case .iPhone12:
 			iOSDisplay(
@@ -201,6 +248,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1170, height: 2532),
 				cornerRadius: 47.33,
+				diagonalSize: 6.1,
 			)
 		case .iPhone12ProMax:
 			iOSDisplay(
@@ -210,6 +258,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1284, height: 2778),
 				cornerRadius: 53.33,
+				diagonalSize: 6.7,
 			)
 		case .iPhone14Pro:
 			iOSDisplay(
@@ -219,6 +268,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1179, height: 2556),
 				cornerRadius: 55,
+				diagonalSize: 6.1,
 			)
 		case .iPhone14ProMax:
 			iOSDisplay(
@@ -227,7 +277,8 @@ extension iOSDisplay {
 				zoomedSize: CGSize(width: 375, height: 812),
 				scale: .x3,
 				physicalResolution: CGSize(width: 1290, height: 2796),
-				cornerRadius: 55
+				cornerRadius: 55,
+				diagonalSize: 6.7,
 			)
 		case .iPhone16Pro:
 			iOSDisplay(
@@ -237,6 +288,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1206, height: 2622),
 				cornerRadius: 62,
+				diagonalSize: 6.3,
 			)
 		case .iPhone16ProMax:
 			iOSDisplay(
@@ -246,6 +298,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1320, height: 2868),
 				cornerRadius: 62,
+				diagonalSize: 6.9,
 			)
 		case .iPhoneAir:
 			iOSDisplay(
@@ -255,6 +308,7 @@ extension iOSDisplay {
 				scale: .x3,
 				physicalResolution: CGSize(width: 1260, height: 2736),
 				cornerRadius: 62,
+				diagonalSize: 6.5,
 			)
 		}
 	}

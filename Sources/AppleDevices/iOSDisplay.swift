@@ -13,7 +13,7 @@ public struct iOSDisplay: Hashable, CustomStringConvertible {
 	public let size: CGSize
 	public let zoomedSize: CGSize?
 	public let scale: Scale
-	public let screenResolution: CGSize
+	public let physicalResolution: CGSize
 	public let renderingResolution: CGSize
 	public let cornerRadius: Double
 
@@ -35,7 +35,7 @@ public struct iOSDisplay: Hashable, CustomStringConvertible {
 		ID                   : \(id)
 		Size                 : \(Int(size.width)) × \(Int(size.height)) @\(scale.rawValue)
 		Zoomed Size          : \(zoomedSizeString)
-		Screen Resolution    : \(Int(screenResolution.width)) × \(Int(screenResolution.height))
+		Physical Resolution  : \(Int(physicalResolution.width)) × \(Int(physicalResolution.height))
 		Rendering Resolution : \(Int(renderingResolution.width)) × \(Int(renderingResolution.height))
 		Corner Radius        : \(cornerRadius)
 		"""
@@ -59,7 +59,7 @@ public struct iOSDisplay: Hashable, CustomStringConvertible {
 		size: CGSize,
 		zoomedSize: CGSize? = nil,
 		scale: Scale,
-		screenResolution: CGSize,
+		physicalResolution: CGSize,
 		renderingResolution: CGSize? = nil,
 		cornerRadius: Double = 0
 	) {
@@ -67,8 +67,8 @@ public struct iOSDisplay: Hashable, CustomStringConvertible {
 		self.size = size
 		self.zoomedSize = zoomedSize
 		self.scale = scale
-		self.screenResolution = screenResolution
-		self.renderingResolution = renderingResolution ?? screenResolution
+		self.physicalResolution = physicalResolution
+		self.renderingResolution = renderingResolution ?? physicalResolution
 		self.cornerRadius = cornerRadius
 	}
 }
@@ -122,7 +122,7 @@ extension iOSDisplay {
 				id: id,
 				size: CGSize(width: 320, height: 480),
 				scale: .x1,
-				screenResolution: CGSize(width: 320, height: 480),
+				physicalResolution: CGSize(width: 320, height: 480),
 				renderingResolution: CGSize(width: 320, height: 480),
 			)
 		case .iPhone4:
@@ -130,14 +130,14 @@ extension iOSDisplay {
 				id: id,
 				size: CGSize(width: 320, height: 480),
 				scale: .x2,
-				screenResolution: CGSize(width: 640, height: 960),
+				physicalResolution: CGSize(width: 640, height: 960),
 			)
 		case .iPhone5:
 			iOSDisplay(
 				id: id,
 				size: CGSize(width: 320, height: 568),
 				scale: .x2,
-				screenResolution: CGSize(width: 640, height: 1136),
+				physicalResolution: CGSize(width: 640, height: 1136),
 			)
 		case .iPhone6:
 			iOSDisplay(
@@ -145,7 +145,7 @@ extension iOSDisplay {
 				size: CGSize(width: 375, height: 667),
 				zoomedSize: CGSize(width: 320, height: 568),
 				scale: .x2,
-				screenResolution: CGSize(width: 750, height: 1334),
+				physicalResolution: CGSize(width: 750, height: 1334),
 			)
 		case .iPhone6Plus:
 			iOSDisplay(
@@ -153,7 +153,7 @@ extension iOSDisplay {
 				size: CGSize(width: 414, height: 736),
 				zoomedSize: CGSize(width: 375, height: 667),
 				scale: .x3,
-				screenResolution: CGSize(width: 1242, height: 2208),
+				physicalResolution: CGSize(width: 1242, height: 2208),
 				renderingResolution: CGSize(width: 1080, height: 1920),
 			)
 		case .iPhoneX:
@@ -162,7 +162,7 @@ extension iOSDisplay {
 				size: CGSize(width: 375, height: 812),
 				zoomedSize: CGSize(width: 320, height: 693),
 				scale: .x3,
-				screenResolution: CGSize(width: 1125, height: 2436),
+				physicalResolution: CGSize(width: 1125, height: 2436),
 				cornerRadius: 39,
 			)
 		case .iPhoneXR:
@@ -171,7 +171,7 @@ extension iOSDisplay {
 				size: CGSize(width: 414, height: 896),
 				zoomedSize: CGSize(width: 375, height: 812),
 				scale: .x2,
-				screenResolution: CGSize(width: 828, height: 1792),
+				physicalResolution: CGSize(width: 828, height: 1792),
 				cornerRadius: 41.5,
 			)
 		case .iPhoneXSMax:
@@ -180,7 +180,7 @@ extension iOSDisplay {
 				size: CGSize(width: 414, height: 896),
 				zoomedSize: CGSize(width: 375, height: 812),
 				scale: .x3,
-				screenResolution: CGSize(width: 1242, height: 2688),
+				physicalResolution: CGSize(width: 1242, height: 2688),
 				cornerRadius: 39,
 			)
 		case .iPhone12Mini:
@@ -189,7 +189,7 @@ extension iOSDisplay {
 				size: CGSize(width: 375, height: 812),
 				zoomedSize: CGSize(width: 320, height: 693),
 				scale: .x3,
-				screenResolution: CGSize(width: 1080, height: 2340),
+				physicalResolution: CGSize(width: 1080, height: 2340),
 				renderingResolution: CGSize(width: 1125, height: 2436), // ????
 				cornerRadius: 44,
 			)
@@ -199,7 +199,7 @@ extension iOSDisplay {
 				size: CGSize(width: 390, height: 844),
 				zoomedSize: CGSize(width: 320, height: 693),
 				scale: .x3,
-				screenResolution: CGSize(width: 1170, height: 2532),
+				physicalResolution: CGSize(width: 1170, height: 2532),
 				cornerRadius: 47.33,
 			)
 		case .iPhone12ProMax:
@@ -208,7 +208,7 @@ extension iOSDisplay {
 				size: CGSize(width: 428, height: 926),
 				zoomedSize: CGSize(width: 375, height: 812),
 				scale: .x3,
-				screenResolution: CGSize(width: 1284, height: 2778),
+				physicalResolution: CGSize(width: 1284, height: 2778),
 				cornerRadius: 53.33,
 			)
 		case .iPhone14Pro:
@@ -217,7 +217,7 @@ extension iOSDisplay {
 				size: CGSize(width: 393, height: 852),
 				zoomedSize: CGSize(width: 320, height: 693),
 				scale: .x3,
-				screenResolution: CGSize(width: 1179, height: 2556),
+				physicalResolution: CGSize(width: 1179, height: 2556),
 				cornerRadius: 55,
 			)
 		case .iPhone14ProMax:
@@ -226,7 +226,7 @@ extension iOSDisplay {
 				size: CGSize(width: 430, height: 932),
 				zoomedSize: CGSize(width: 375, height: 812),
 				scale: .x3,
-				screenResolution: CGSize(width: 1290, height: 2796),
+				physicalResolution: CGSize(width: 1290, height: 2796),
 				cornerRadius: 55
 			)
 		case .iPhone16Pro:
@@ -235,7 +235,7 @@ extension iOSDisplay {
 				size: CGSize(width: 402, height: 874),
 				zoomedSize: CGSize(width: 320, height: 693),
 				scale: .x3,
-				screenResolution: CGSize(width: 1206, height: 2622),
+				physicalResolution: CGSize(width: 1206, height: 2622),
 				cornerRadius: 62,
 			)
 		case .iPhone16ProMax:
@@ -244,7 +244,7 @@ extension iOSDisplay {
 				size: CGSize(width: 440, height: 956),
 				zoomedSize: CGSize(width: 375, height: 812),
 				scale: .x3,
-				screenResolution: CGSize(width: 1320, height: 2868),
+				physicalResolution: CGSize(width: 1320, height: 2868),
 				cornerRadius: 62,
 			)
 		case .iPhoneAir:
@@ -253,7 +253,7 @@ extension iOSDisplay {
 				size: CGSize(width: 420, height: 912),
 				zoomedSize: CGSize(width: 375, height: 812),
 				scale: .x3,
-				screenResolution: CGSize(width: 1260, height: 2736),
+				physicalResolution: CGSize(width: 1260, height: 2736),
 				cornerRadius: 62,
 			)
 		}

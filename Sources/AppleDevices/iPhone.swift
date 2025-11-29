@@ -2,6 +2,7 @@
 
 import Foundation
 import CoreGraphics
+import Playgrounds
 
 public struct iPhone: Equatable {
 	public let id: ID
@@ -499,5 +500,30 @@ extension iPhone {
 				releaseIOSVersion: "26.0.0",
 			)
 		}
+	}
+}
+
+extension [iPhone] {
+	var displays: [iOSDisplay] {
+		map { $0.display }
+	}
+
+	var uniqueDisplays: [iOSDisplay] {
+		displays.unique()
+	}
+}
+
+struct DisplayConfiguration {
+	let display: iOSDisplay
+	let isZoomed: Bool
+	
+}
+
+#Playground {
+	let displays = iPhone.phonesSupporting(.iOS_26)
+		.uniqueDisplays
+
+	let displaysAndDevices: [(iOSDisplay.ID, [iPhone.ID])] = displays.map { display in
+		(display.id, display.devices.map(\.id))
 	}
 }

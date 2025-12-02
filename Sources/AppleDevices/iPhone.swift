@@ -504,11 +504,11 @@ extension iPhone {
 }
 
 extension [iPhone] {
-	var displays: [iOSDisplay] {
+	public var displays: [iOSDisplay] {
 		map { $0.display }
 	}
 
-	var uniqueDisplays: [iOSDisplay] {
+	public var uniqueDisplays: [iOSDisplay] {
 		displays.unique()
 	}
 }

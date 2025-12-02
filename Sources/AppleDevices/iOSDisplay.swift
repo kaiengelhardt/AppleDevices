@@ -135,7 +135,7 @@ extension iOSDisplay {
 }
 
 extension iOSDisplay {
-	public enum ID: Hashable, CaseIterable {
+	public enum ID: String, RawRepresentable, Hashable, CaseIterable {
 		case iPhone
 		case iPhone4
 		case iPhone5

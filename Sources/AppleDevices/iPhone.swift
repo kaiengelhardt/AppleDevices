@@ -513,17 +513,7 @@ extension [iPhone] {
 	}
 }
 
-struct DisplayConfiguration {
-	let display: iOSDisplay
-	let isZoomed: Bool
-	
-}
-
 #Playground {
 	let displays = iPhone.phonesSupporting(.iOS_26)
 		.uniqueDisplays
-
-	let displaysAndDevices: [(iOSDisplay.ID, [iPhone.ID])] = displays.map { display in
-		(display.id, display.devices.map(\.id))
-	}
 }
